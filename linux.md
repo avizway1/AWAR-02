@@ -784,5 +784,245 @@ For example:
    - `free -h`: Displays memory usage in a human-readable format.
 
 ---
+# User Management in linux
+
+---
+
+| **Command**   | **Description**                          | **Example**                                    |
+|---------------|------------------------------------------|------------------------------------------------|
+| `useradd`     | Create a new user.                      | `sudo useradd avinash`                         |
+| `passwd`      | Set or update a user’s password.        | `sudo passwd avinash`                          |
+| `usermod`     | Modify an existing user.                | `sudo usermod -aG wheel avinash`               |
+| `userdel`     | Delete a user account.                  | `sudo userdel avinash`                         |
+| `id`          | Display user and group IDs.             | `id avinash`                                   |
+| `groups`      | Show groups a user belongs to.          | `groups avinash`                               |
+| `whoami`      | Show the currently logged-in user.      | `whoami`                                       |
+| `su`          | Switch to another user.                 | `su - avinash`                                 |
+| `sudo`        | Execute commands as another user.       | `sudo yum update`                              |
+| `groupadd`    | Create a new group.                     | `sudo groupadd developers`                     |
+| `usermod -g`  | Change a user’s primary group.           | `sudo usermod -g developers avinash`           |
+| `usermod -G`  | Add a user to a secondary group.         | `sudo usermod -aG wheel avinash`               |
+| `gpasswd`     | Add or remove users from a group.        | `sudo gpasswd -a avinash developers`           |
+| `deluser`     | Remove a user from a group.              | `sudo gpasswd -d avinash developers`           |
+
+---
+
+### **Important User Management Commands in Linux**
+
+1. **Create a New User**
+   - Command:  
+     ```bash
+     sudo useradd username
+     ```
+2. **Set a Password for the User**
+   - Command:  
+     ```bash
+     sudo passwd username
+     ```
+     This sets or updates the password for the user.
+
+3. **Enable Password Authentication**
+   - **Step 1:** Edit the SSH configuration file to enable password authentication:  
+     ```bash
+     sudo vim /etc/ssh/sshd_config
+     ```
+   - **Step 2:** Locate and update these lines:
+     ```plaintext
+     PasswordAuthentication yes
+     ```
+   - **Step 3:** Restart the SSH service to apply changes:
+     ```bash
+     sudo systemctl restart sshd
+     ```
+
+4. **Switch to Another User**
+   - Command:  
+     ```bash
+     su - username
+     ```
+     This command allows you to log in as another user and access their environment.
+To add a user to the `wheel` group, which grants sudo permissions on many Linux distributions, you can use the following command:
+
+```bash
+sudo usermod -aG wheel username
+```
+---
+
+### Verify the User's Group Membership
+After adding the user, you can verify their group memberships using:
+```bash
+groups username
+```
+---
+
+### **Additional User Management Commands**
+- **Delete a User:**  
+  ```bash
+  sudo userdel username
+  ```
+  To delete the user along with their home directory:
+  ```bash
+  sudo userdel -r username
+  ```
+
+- **View User Details:**  
+  ```bash
+  id username
+  ```
+- **View Currently Logged-in Users:**  
+  ```bash
+  who
+  ```
+---
+
+**To log in directly as another user to your EC2 instance without using a keypair, you can set up password-based authentication.
+**
+---
+
+#### 1. **Switch to the User and Set a Password**
+   - Create a new user (if not already created):
+     ```bash
+     sudo useradd -m username
+     ```
+   - Set a password for the user:
+     ```bash
+     sudo passwd username
+     ```
+
+#### 2. **Enable Password Authentication for SSH**
+   - Edit the SSH configuration file:
+     ```bash
+     sudo vim /etc/ssh/sshd_config
+     ```
+   - Look for the following lines and update them:
+     ```plaintext
+     PasswordAuthentication yes
+     ```
+   - Save and exit the editor.
+
+#### 3. **Restart the SSH Service**
+   - Restart the SSH service to apply changes:
+     ```bash
+     sudo systemctl restart sshd
+     ```
+#### 4. **Connect to the EC2 Instance**
+   - Use an SSH client to log in with the username and password:
+     ```bash
+     ssh username@<EC2-Public-IP>
+     ```
+   - You will be prompted for the password set in Step 1.
+
+---
+# File and Directory Permissions Management in Amazon Linux 2023
+---
+
+In Amazon Linux 2023, managing file and directory permissions is done using the `chmod`, `chown`, and `chgrp` commands. Below is a table that explains common permission commands using the **numeric method** (also known as octal notation).
+
+---
+
+### Understanding Numeric (Octal) Permissions
+
+- **4** – Read (`r`)  
+- **2** – Write (`w`)  
+- **1** – Execute (`x`)  
+
+The permissions are set in three levels:
+- **User (Owner)**  
+- **Group**  
+- **Others (World)**  
+
+### Numeric Values:
+- `0` – No permission  
+- `1` – Execute only  
+- `2` – Write only  
+- `3` – Write and execute  
+- `4` – Read only  
+- `5` – Read and execute  
+- `6` – Read and write  
+- `7` – Read, write, and execute  
+
+---
+
+### Permissions Management Commands Table
+
+| **Command**    | **Description**                            | **Example**                     |
+|----------------|--------------------------------------------|---------------------------------|
+| `chmod 400`    | Owner: Read only, No access for others.    | `chmod 400 file.txt`            |
+| `chmod 600`    | Owner: Read and write, No access for others. | `chmod 600 file.txt`            |
+| `chmod 700`    | Owner: Full access, No access for others.  | `chmod 700 script.sh`           |
+| `chmod 644`    | Owner: Read and write, Others: Read only.  | `chmod 644 file.txt`            |
+| `chmod 664`    | Owner and group: Read and write, Others: Read. | `chmod 664 file.txt`        |
+| `chmod 755`    | Owner: Full access, Others: Read and execute. | `chmod 755 script.sh`       |
+| `chmod 777`    | Everyone: Full access.                     | `chmod 777 file.txt`            |
+| `chmod 000`    | No one has any permission.                 | `chmod 000 file.txt`            |
+| `chown`        | Change file owner.                        | `sudo chown avinash file.txt`   |
+| `chgrp`        | Change file group.                        | `sudo chgrp developers file.txt` |
+| `chown -R`     | Change ownership recursively.              | `sudo chown -R avinash /data`   |
+| `chmod -R`     | Change permissions recursively.            | `chmod -R 755 /scripts`         |
+
+---
+
+### Explanation and Example Commands
+
+1. **Set Read-only Permission for Owner**
+```bash
+chmod 400 file.txt
+```
+- Owner can read the file, others have no access.
+
+2. **Set Full Permission for Owner, No Access for Others**
+```bash
+chmod 700 script.sh
+```
+- Owner has read, write, and execute permissions.
+
+3. **Allow Read and Write for Owner and Group, Read for Others**
+```bash
+chmod 664 file.txt
+```
+- Owner and group can read and write, others can only read.
+
+4. **Set Full Access for Everyone**
+```bash
+chmod 777 file.txt
+```
+- Everyone has read, write, and execute permissions.
+
+5. **Change File Owner**
+```bash
+sudo chown avinash file.txt
+```
+- Changes the owner to `avinash`.
+
+6. **Change File Group**
+```bash
+sudo chgrp developers file.txt
+```
+- Changes the group to `developers`.
+
+7. **Recursively Change Ownership of a Directory**
+```bash
+sudo chown -R avinash /data
+```
+- Changes ownership of `/data` and all its contents.
+
+8. **Recursively Apply Permissions**
+```bash
+chmod -R 755 /scripts
+```
+- Applies `755` permissions to all files and directories inside `/scripts`.
+
+---
+
+### Quick Reference for Common Permissions
+
+| **Octal** | **Permission**      | **Description**                      |
+|-----------|---------------------|--------------------------------------|
+| `400`     | r--------            | Owner can read, no access to others |
+| `600`     | rw-------            | Owner can read and write            |
+| `700`     | rwx------            | Owner has full permissions          |
+| `644`     | rw-r--r--            | Owner can read/write, others can read |
+| `755`     | rwxr-xr-x            | Owner has full, others can read/execute |
+| `777`     | rwxrwxrwx            | Full permissions for everyone       |
 
 
