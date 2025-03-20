@@ -1193,7 +1193,7 @@ The `lsblk` and `df` commands in Linux provide information about disk and file s
 
 ---
 
-### Increasing Volume Size
+### Increasing Volume Size with Amazon Linux 2
 1. Increase the size in the AWS console.
 2. Install `xfsprogs`: `yum install xfsprogs`.
 3. Expand volume:
@@ -1202,7 +1202,14 @@ The `lsblk` and `df` commands in Linux provide information about disk and file s
    xfs_growfs -d /home/ec2-user/newvolume
    ```
 
+### Increasing Volume Size with Amazon Linux 2023
+1. Increase the size in the AWS console.
+2. Install `growpart` (if not available).
+3. Expand the partition first:
+   ```
+   growpart /dev/xvda 1
+   xfs_growfs -d /volume-Mountpoint
+   xfs_growfs -d /
+   ```
+
 **Note**: Decreasing volume size is not supported at movement.
-
-
-
