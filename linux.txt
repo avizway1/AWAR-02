@@ -1,0 +1,394 @@
+Distro : Distrubutions
+
+General Use : Ubuntu, Fedora, mint
+Enterprise : RHEL (Redhat Enterprise Linux), SUSE, Oracle Linux, Amazon Linux
+pen testing : Kali Linux, Parrot OS
+COntainers : alphine, lubuntu 
+
+-->  / (Root Dir) : Parent of all directories.  (c:\)
+Everything in Linux starts here.
+
+--> /root : Home directory for root user.
+equal to : c:/Users/Administrator
+
+--> /home : users home directory
+c:/users/<username>
+
+--> /bin (Binary executables) : Contains essential binary files for all users.
+ls, mv, mkdir, rmdir
+
+/boot (Boot loader) : containes linux kernel, boot config files. (Contains required files to start OS)
+
+/dev : Contains hard disk drives or cd-rom. (ex: /dev/xvda, /dev/xvdb, /dev/xvdc) 
+In windows : Device manager
+
+/etc : System level Configuration settings files :  
+
+/usr : Users Programs : User level programs and libs (Installed programs/softwares)
+c:/program files / (x86)  
+/usr/bin, /usr/lib
+
+/sbin : Contains System Administration Commands : (Ip address config commands, ip table comamnds)
+Only root user / superusers can execute these commands.
+
+/var : Variable files : logs, docuemnt root paths.. 
+webserver : web conent / logs 
+
+
+/mnt : mount point : temp mount points
+/media : removable media
+/lib /lib64 : libraries for programs (similar to windows .dll files)
+/proc : process info : ram  cpu info
+/opt : 3rd part softwares and addons.
+
+=============================================================================
+
+uname
+man : Manual
+whoami : tells you as a what user we are working now.
+pwd : Print working directory : Tells you where you are at present in Os.
+ls
+ls -a
+touch
+mkdir
+cd
+cd ..
+cd /path
+
+man <command> q--> quit
+
+----
+
+cat
+more
+head
+tail
+sort
+cp
+mv
+echo
+grep
+zip mytest.zip file1.txt f2.txt f3.txt
+zip allfiles.zip *
+zip -r entiredir.zip /home/ec2-user
+
+---
+
+VIM
+Package Management
+
+touch a.txt
+
+vim a.txt ==> Open an existing file
+
+vim b.txt 
+
+i --> insert mode
+esc --> command mode
+
+:wq --> write and quit
+:q! --> Quit without writing data
+
+j & k --> to naviagate
+dd --> delete the entire line
+10dd --> delete next 10 lines
+d$ --> Delete entire data from the cursor
+nG. (10G) --> Jump to specific line 
+
+
+rpm : redhat packagae manager : It cant resolve dependencies.
+
+YUM : Yellowdog updater Modified : wrapper to rpm.
+--> Automatically resolves the dependencies.
+
+yum update
+yum install <package>
+yum search <package>
+yum remove <package>
+
+
+dnf AL 2023: DNF Dandified Yum: 
+dnf update
+dnf install <package>
+dnf search <package>
+dnf remove <package>
+dng list linstalled
+
+repo / Repository: Storage location (Packages / updates / Dependencies). Preconfigured binaries, Source code and meta data, we can install/remove packages using this information.
+
+--> Official repo: RHEL/CentOS/Ubuntu :
+--> Local repo : created by us
+--> Third Party repo : 
+
+[base]
+name=
+baseurl=???
+enabled=1
+gpgcheck=1
+
+
+Path : 
+
+/etc/yum.repos.d/*.repo
+
+/etc/yum.repos.d/ 
+/etc/dnf/dnf.conf
+
+Simplified AWS Option:
+service httpd status
+service httpd start
+service httpd stop
+service httpd restart
+
+
+Traditional option:
+systemctl start httpd
+systemctl stop httpd
+systemctl status httpd
+systemctl restart httpd
+
+logon Service : chkconfig httpd on   == systemctl enable httpd
+
+
+telnet : TO verify port status..
+
+telnet <ipadd> <22>
+telnet <ipadd> <80>
+
+win+r --> services.msc --> list all windows services 
+
+httpd --> Make it as logon service..!! chkconfig httpd on /systemctl enable httpd
+
+Document Root Path : /var/www/html/  --> default name index.html
+status.html
+
+<ipaddr>
+<ipaddr>/status.html
+
+pstree
+ps
+ps aux
+top
+kill PID
+uptime
+free -h
+
+
+Task : Launch an ec2 instance and make it as webserver with HTTPD and deliver the webpage for everyone.
+
+Task : Launch an ec2 instance and make it as webserver with "nginx" and deliver the webpage for everyone.
+
+
+
+
+
+usermod -aG wheel avinash
+
+ssh -i awar-02.pem ec2-user@13.126.31.168
+
+ssh avinash@13.126.31.168. ..???
+
+
+user created
+setup password
+added user to wheel group
+edited sshd config file
+restarted the servcie
+tried login directly 
+
+
+====================
+
+rw-  r--  r--  a.txt
+6    4    4
+
+
+
+ec2-user --> whoami
+
+Read ----> 4 (r)
+Write ---> 2 (w)
+Execute -> 1 (x)
+
+
+User -> u
+Group -> g
+Others -> o
+
+
+0 - No Permissons (---)
+1 - Execute Only (--x)
+2 - Write Only (-w-)
+3 - write and execute (-wx)
+4 - Read Only (r--)
+5 - Read and Execute (r-x)
+6 - Read and Write (rw-)
+7 - Read, Write and Execute (rwx)
+
+
+chmod 400 a.txt
+
+user : read only
+group : No Perm
+others : No Perm
+
+chmod 777 a.txt
+
+user : read, write and execute
+group : read, write and execute
+others : read, write and execute
+
+chmod 640 a.txt
+
+user : Read and Write
+group : read Only
+others : No permissions
+
+----
+
+
+EBS : Elastic Block Storage : Service to provide Storage to our ec2 instances.
+
+Volume Performance : IOPS : Input and Output operations per second
+
+128 GB Storage
+
+4 KB Block Size / Chunk 
+100 mbps Throughput
+
+IOPS : Throughput and block size
+
+100 x 1024 / 4 = 102400/4 = 25,600 IOPS
+
+------
+
+root volume : Contains OS : only SSDs support for root volume
+
+HDD : Hard disk drive : 
+80 - 160 MB/s
+1 Min to Boot
+high power usage
+
+SSD : Solid state disk/drive
+550 mb - 7000 MB/S
+30 sec
+low power usage
+
+Magnetic : Old generation
+
+---
+
+General Purpose SSD : Designed for most common daily workloads
+	--> GP2 : Every 1 GB, we get 3 IOPS (with Min of 100 IOPS)
+	--> GP3 : We can choose required iops count
+
+Size Limits : 1 GB, Max: 16 TB
+Max IOPS : 16000
+
+---
+
+Provisioned IOPS SSD : My application required specific IOPS operation, Database workload
+	--> io1
+	--> io2
+
+Size Limits : 4 GB, 16 TB
+Max IOPS : 64,000
+
+io2 block express : 256,000 IOPS
+
+---
+
+HDD : Dont support root volume : Min Volume Size : 125 GB, Max: 16 TB
+
+Throughout Optimized HDD : 500 MB/S throughput : Data warehousing worklds, Bigdata workloads, To process the logs : Suitable for frequently accessed data
+
+COld HDD : Suitable for less freq acessed data : 250 MB/S throughput
+
+---
+
+Magnetic : low cost storage solution with less performance.
+Min: 1 Gb, max : 1 TB
+
+
+Windows FS:
+FAT
+FAT32
+NTFS --> Commonly used
+ReFS
+
+Linux FS:
+xfs --> commonly used
+ext
+ext4
+nfs
+
+----
+lsblk : and get the volume name : xvdb
+
+total path : /dev/xvdb
+
+Verify file system presence : file -s /dev/xvdb
+
+Output is Data : No file system (Need to write a file system)
+Output : XFS (No need to write a file system)
+
+
+mkfs -t xfs /dev/xvdb
+
+mkdir newvol
+mount /dev/xvdb newvol/
+
+
+lsblk
+df -Th
+file -s /dev/xvd*
+mkfs -t /dev/xvd* newvol/
+
+get the new volume entry from "/etc/mtab" and write it to "/etc/fstab" file.
+
+cat /etc/mtab
+
+/dev/xvdb /home/ec2-user/newvol xfs rw,seclabel,relatime,attr2,inode64,logbufs=8,logbsize=32k,noquota 0 0
+
+vim /etc/fstab
+
+---
+
+How to increase a volume size.
+
+1. Increase the volume size at AWS console.
+
+yum install xfsprogs
+
+xfs_growfs -d /home/ec2-user/newvol
+
+
+Amazon Linux 2023:
+
+gowpart /dev/xvda 1
+
+xfs_growfs -d /
+
+
+Task : Launch linux instance, Attach an additonal volume (2 GB), make it available at OS level, rebbot and verify the volume status. 
+
+Task 2 : Increase the additional volume size to 4 GB and apply it. Rebbot and verify.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
