@@ -328,4 +328,227 @@ icacls "<path-to-private-key-file>" /grant:r "%USERNAME%:R"
 - **Ubuntu**: `ubuntu`  
 ---
 
+
 ---
+
+						**Scenarios for Using Snapshots in AWS**
+
+_**What is a Snapshot in AWS?**_
+A snapshot in AWS is a point-in-time backup of an Amazon EBS (Elastic Block Store) volume. Snapshots are stored in Amazon S3, though not visible in your S3 bucket, and can be used to back up, restore, or replicate EBS volumes.
+
+#### **1. Moving a Volume Between Instances in the Same Availability Zone (AZ)**  
+- **Scenario:**  
+  Instance 1 in `ap-south-1a` → Instance 2 in `ap-south-1a`.  
+  - **Steps:**  
+    - Detach the volume from **Instance 1**.  
+    - Attach the volume to **Instance 2** within the same AZ.  
+  - **Reason:**  
+    Volumes can only be attached to instances within the same AZ.  
+
+---
+
+#### **2. Moving a Volume Between Instances in Different Availability Zones (AZs)**  
+- **Scenario:**  
+  Instance 1 in `ap-south-1a` → Instance 2 in `ap-south-1b`.  
+  - **Steps:**  
+    - Detach from **Instance 1** and attach to **Instance 2** is not directly possible due to AZ restrictions.  
+    - **Solution:**  
+      1. Choose the volume and take a **snapshot**.  
+      2. Create a new volume from the snapshot and select `ap-south-1b` as the AZ during creation.  
+      3. Attach the newly created volume to **Instance 2** in `ap-south-1b`.  
+
+---
+
+#### **3. Moving a Volume Between Instances in Different Regions**  
+- **Scenario:**  
+  Instance 1 in `Mumbai (ap-south-1a)` → Instance 2 in `N. Virginia (us-east-1a)`.  
+  - **Steps:**  
+    - Detach from **Instance 1** and attach to **Instance 2** is not directly possible due to region restrictions.  
+    - **Solution:**  
+      1. Take a **snapshot** of the volume.  
+      2. Copy the snapshot to the desired region (`us-east-1`).  
+      3. Create a volume from the copied snapshot, ensuring `us-east-1a` is selected as the AZ.  
+      4. Attach the newly created volume to **Instance 2** in `N. Virginia (us-east-1a)`.  
+    - **Note:** Data transfer between regions incurs costs.  
+
+---
+
+#### **4. Moving a Volume Between AWS Accounts in the Same Region**  
+- **Scenario:**  
+  Instance 1 in `AWS Account 1: Mumbai (ap-south-1a)` → Instance 2 in `AWS Account 2: Mumbai (ap-south-1a)`.  
+  - **Steps:**  
+    - Detach from **Instance 1** and attach to **Instance 2** is not directly possible as volumes cannot be shared across AWS accounts.  
+    - **Solution:**  
+      1. Take a **snapshot** of the volume in **AWS Account 1**.  
+      2. Share the snapshot with **AWS Account 2**.  
+      3. In **AWS Account 2**, create a volume from the shared snapshot, selecting `ap-south-1a` as the AZ.  
+      4. Attach the new volume to **Instance 2**.  
+
+---
+
+#### **5. Sharing a Volume with Everyone (Public Access)**  
+- **Scenario:**  
+  Share a volume to make it accessible publicly.  
+  - **Steps:**  
+    - Take a **snapshot** of the volume.  
+    - Mark the snapshot as **Public** in its permissions.  
+    - Anyone can use this public snapshot to create their own volume.  
+  - **Use Case:**  
+    Sharing data, templates, or other resources broadly within the AWS community.  
+
+---
+
+### **AWS Snapshots Key Points**
+
+1. **Point-in-Time Copies**  
+   - Snapshots are **point-in-time copies** of EBS volumes, capturing the state and data of a volume at a specific moment.
+
+2. **Storage Platform**  
+   - Snapshots are stored in the **S3 platform**, but **not in your S3 bucket**. They are managed by AWS and are not visible in the S3 console.
+
+3. **Viewing Data Inside Snapshots**  
+   - **Can we view the data inside a snapshot?**  
+     **No**, snapshots do not provide a direct way to browse or access the data they contain. They are only meant for creating new volumes or restoring existing ones.
+
+4. **Incremental Backup Mechanism**  
+   - Snapshots use an **incremental backup mechanism**, meaning:  
+     - The first snapshot is a full backup.  
+     - Subsequent snapshots only store the changes (blocks) made since the previous snapshot, optimizing storage and costs.
+
+5. **Encryption and Snapshots**  
+   - **Encrypted Volumes and Snapshots**:  
+     - If a volume is encrypted, any snapshot created from it is **automatically encrypted**.  
+   - **Creating Volumes from Encrypted Snapshots**:  
+     - Volumes created from encrypted snapshots are also **automatically encrypted** with the same encryption key.
+
+6. **Sharing Snapshots**  
+   - **Default AWS Master Key Encryption**:  
+     - Snapshots encrypted with the default AWS-managed KMS key **cannot be shared** across accounts.  
+   - **Custom Encryption Key**:  
+     - Snapshots encrypted with a **customer-managed key** can be shared with other AWS accounts, but:  
+       - You must grant permissions on the encryption key to the target account.  
+       - Without key permissions, the target account cannot use the shared snapshot.
+
+---
+
+### **AWS Data Lifecycle Manager (DLM)**  
+
+**1. What is AWS DLM?**  
+   - **AWS Data Lifecycle Manager (DLM)** is a service that automates the **creation, retention, and deletion of EBS snapshots**.  
+   - DLM helps manage backups efficiently, reducing the operational overhead of manual snapshot creation and retention.
+
+---
+
+**2. Why is it important to take backups?**  
+   - **Data Protection**: Backups protect critical data from unexpected events such as system failures, accidental deletions, or data corruption.  
+   - **Disaster Recovery**: Ensures quick recovery in case of disasters, minimizing downtime and data loss.  
+   - **Compliance**: Many organizations have regulatory requirements to maintain backups for a specific duration.  
+   - **Versioning**: Maintains historical versions of data, allowing restoration to a specific point in time.  
+
+---
+### **Benefits of Using AWS DLM**  
+1. Backups are taken on a fixed schedule, ensuring no resources are missed.  
+2. Automatically deletes outdated snapshots, reducing unnecessary storage costs.  
+3. Minimal manual intervention is required—DLM handles the entire lifecycle of snapshots.  
+
+---
+
+**3. How does DLM automate backups?**  
+   - **Tag-Based Filtering**:  
+     - DLM policies use **tags** to identify resources (EBS volumes) for automated snapshot management.  
+     - By applying consistent tags across environments, DLM can handle backups for multiple resources effortlessly.  
+
+   - **Retention Policies**:  
+     - DLM lets you define **retention periods** to ensure that old snapshots are deleted automatically, optimizing storage costs.  
+     - Real-Time Scenarios:  
+       - **Production (Prod)**: Retain snapshots for **7 days**.  
+       - **Non-Production (Non-Prod)**: Retain snapshots for **3 days**.  
+
+   - **Scheduled Backup Creation**:  
+     - You can specify the **frequency** and **time of backup creation** for each policy to ensure backups align with your operational requirements.  
+
+   - **Fast Snapshot Restore (FSR)**:  
+     - FSR ensures that volumes created from DLM-managed snapshots are ready to deliver full performance immediately after creation, eliminating initialization delays.
+
+---
+### **What is a Custom AMI (Golden AMI) in AWS?**
+
+A **Golden AMI** is a pre-configured, **customized Amazon Machine Image** that includes all required software, configurations, and settings. It allows organizations to standardize deployments, save time, and ensure consistency across EC2 instances.
+
+---
+
+### **Importance of a Golden AMI**
+
+#### **Scenario**:  
+You have **10 EC2 instances**, each requiring the following: Antivirus software, Microsoft Office, Custom WordPress setup, Custom OS users, Applications and IIS server  
+
+**Option 1**:  
+- Launch 10 EC2 instances individually.  
+- Manually configure each instance (install software, customize OS, etc.).  
+- **Result**: Time-consuming, error-prone, and inconsistent configurations.  
+
+**Option 2**:  
+- Launch **1 EC2 instance** and perform all configurations.  
+- Create a **Golden AMI** from this configured instance.  
+- Use the Golden AMI to launch 10 instances.  
+- **Result**: Time-efficient, consistent, and scalable.  
+
+---
+
+### **Steps to Create a Golden AMI**
+
+1. **Launch a Base EC2 Instance**:
+   - Choose an Amazon-provided AMI (e.g., Amazon Linux, Windows Server).  
+   - Configure the instance (e.g., instance type, security groups, etc.).  
+
+2. **Customize the Instance**:
+   - Install required software (e.g., antivirus, MS Office, custom applications).  
+   - Create OS users and set permissions.  
+   - Perform system hardening, such as applying **CIS Benchmarks** for security compliance.  
+   - Configure application settings (e.g., IIS or WordPress).  
+
+3. **Prepare for AMI Creation**:
+   - Clean temporary data and logs to reduce AMI size.  
+   - Stop services or processes that should not run on boot.  
+   - Ensure the instance is **stopped** or in a stable state.  
+
+4. **Create the AMI**:
+   - In the EC2 console, select the instance.  
+   - Choose **Actions → Image and Templates → Create Image**.  
+   - Provide a name and description for the image.  
+   - Optionally, customize volume settings (e.g., size, encryption).  
+
+5. **Validate the AMI**:
+   - Launch a test instance from the AMI.  
+   - Verify that all configurations and software are intact.  
+
+---
+
+### **Golden AMI Use Cases**
+
+1. **Launch Instances in the Same Region**:
+   - Use the Golden AMI to spin up additional instances within the same AWS Region.  
+
+2. **Cross-Region Deployment**:
+   - Copy the Golden AMI to another region using the **"Copy AMI"** feature.  
+   - Launch instances in the target region.  
+
+3. **Cross-Account Sharing**:
+   - Share the Golden AMI with another AWS account using 12 digit account ID.
+   - Share Golden AMI across the Organisation (Multiple AWS accounts)
+     
+4. **Public Sharing**:
+   - Share the Golden AMI publicly for open usage (e.g., community use cases).  
+
+---
+
+### **Golden AMI vs Snapshots**
+
+| Feature             | Golden AMI                         | Snapshot                             |
+|---------------------|------------------------------------|--------------------------------------|
+| **Purpose**         | Full system (OS + Apps + Data)     | Point-in-time backup of an EBS volume |
+| **Deployment**      | Launch EC2 instances               | Restore or create EBS volumes        |
+| **Customization**   | Includes OS and customizations     | Limited to volume content            |
+
+---
+
