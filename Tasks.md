@@ -1,3 +1,10 @@
+#### **Task 1**: **Add load on ec2 instance and test the alarm
+1. **Launch a Linux EC2 Instance**:  
+   - Select the appropriate AMI and instance type.
+   - Install stress package and install htop package
+2. **Create Alarm**:  
+   - Create an Alarm to "stop" an ec2 instance when the load is more than 70% for 300 seconds. 
+   - Also, configure alerts to your email when above alarm triggered.  
 
 #### **Task 1**: **Linux EC2 Instance Setup with Web Server and Custom Configuration**  
 1. **Launch a Linux EC2 Instance**:  
