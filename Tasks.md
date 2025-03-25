@@ -1,5 +1,56 @@
+
+#### **Task 1**: **Linux EC2 Instance Setup with Web Server and Custom Configuration**  
+1. **Launch a Linux EC2 Instance**:  
+   - Select the appropriate AMI and instance type.  
+   - Configure security group rules to allow HTTP/HTTPS traffic.  
+2. **Web Server Setup**:  
+   - Install and configure a web server (e.g., Apache or Nginx).  
+   - Add custom webpages and verify their accessibility via the public IP.  
+3. **Volume Association**:  
+   - Create a 2GB EBS volume.  
+   - Attach the volume to the instance.  
+   - Format, mount, and configure it for permanent mounting.  
+4. **Golden AMI Creation**:  
+   - Create an AMI of the configured instance.  
+5. **Test Golden AMI**:  
+   - Launch a new instance from the created AMI.  
+   - Verify the web server and custom configurations are intact.  
+
 ---
 
+#### **Task 2**: **Windows EC2 Instance Customization and Testing**  
+1. **Launch a Windows EC2 Instance**:  
+   - Select the appropriate AMI and instance type.  
+   - Configure security group rules to allow RDP traffic.  
+2. **Connect to the Instance**:  
+   - Retrieve and decrypt the administrator password.  
+   - Connect using an RDP client.  
+3. **Perform Customizations**:  
+   - Change the administrator password.  
+   - Change the desktop wallpaper.  
+   - Install PuTTY software.  
+   - Install IIS and configure a custom webpage.  
+4. **Golden AMI Creation**:  
+   - Stop the instance and create an AMI.  
+5. **Test Golden AMI**:  
+   - Launch a new instance from the created AMI.  
+   - Verify the customizations are preserved.  
+
+---
+
+#### **Task 3**: **Setup Password Authentication for EC2-User**  
+1. Follow the steps in the provided [guide](https://comtechies.com/password-authentication-aws-ec2.html):  
+   - Enable password authentication in the SSH configuration file.  
+   - Restart the SSH service.  
+   - Set a password for the `ec2-user`.  
+2. Verify that password authentication works as expected.  
+
+---
+
+
+
+
+---
 ### **Task 1: S3 Bucket Creation and Replication**
 1. **Objective:**  
    - Create an S3 bucket in the **Mumbai (ap-south-1)** region. Enable versioning on the bucket.  
@@ -199,6 +250,5 @@ Create an IAM user.. Provide him S3FullAccess.. But on a specific bucket "Deny" 
 4. Access the Web Page:  
    - Open a browser and navigate to the Public IP of the EC2 instance (e.g., `http://<Public-IP>`).  
    - The custom webpage should be displayed.
-
 
 ---
