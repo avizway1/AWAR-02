@@ -552,3 +552,346 @@ You have **10 EC2 instances**, each requiring the following: Antivirus software,
 
 ---
 
+---
+
+### **Elastic IP Address (EIP)**
+- **What is EIP?**
+  - A static, public IPv4 address in AWS that you can assign to an EC2 instance or other AWS services.
+  - Unlike a regular public IP, it persists even after stopping/Starting the instance.
+
+- **Features**:
+  1. **Dedicated IP**: Useful for applications requiring a consistent public IP (e.g., hosting a website).
+  2. **Cost Considerations**: **Not free tier eligible**. Charges apply if the EIP is not associated with a running resource.
+
+- **Important Note**:
+  - AWS charges for EIPs that are allocated but not used.
+  - Avoid unnecessary EIP allocation to reduce costs.
+
+---
+
+### **What is a Security Group?**
+- **Definition**:
+  - A virtual firewall for your EC2 instance to control inbound and outbound traffic.
+  - You can specify rules based on protocols, ports, and IP addresses.
+
+- **Types of Rules**:
+  1. **Inbound Rules**:
+     - Define what type of incoming traffic is allowed (e.g., SSH, HTTP).
+  2. **Outbound Rules**:
+     - Define what type of outgoing traffic is allowed (e.g., access to the internet).
+
+- **Common Ports**:
+
+| **Port** | **Protocol**   | **Purpose**                                |
+|----------|----------------|--------------------------------------------|
+| 20       | FTP            | File Transfer Protocol - Data Transfer.   |
+| 21       | FTP            | File Transfer Protocol - Control.         |
+| 22       | SSH/SFTP       | Secure shell access and secure file transfer. |
+| 53       | DNS            | Domain Name System (name resolution).     |
+| 80       | HTTP           | Unsecured web traffic (regular web browsing). |
+| 389      | LDAP           | Lightweight Directory Access Protocol (directory services). |
+| 443      | HTTPS          | Secured web traffic (secure web browsing). |
+| 636      | LDAPS          | Secure Lightweight Directory Access Protocol. |
+| 3306     | MySQL/MariaDB  | Database connections for MySQL or MariaDB. |
+| 3389     | RDP            | Remote Desktop Protocol (Windows remote access). |
+| 5432     | PostgreSQL     | Database connections for PostgreSQL.       |
+| 8080     | HTTP (Alt)     | Alternative HTTP port, often used for web proxies. |
+| 1433     | MS SQL         | Microsoft SQL Server database connections. |
+
+
+---
+
+### **1. Security Group Overview**
+A Security Group is like the main **security guard** for your house. It decides who can enter (inbound rules) and who can leave (outbound rules). Just like in a house, you can allow specific people in and out based on rules.
+
+---
+
+### **2. Port Numbers**
+Think of port numbers as specific **doors or windows** of your house that serve different purposes. Each door (port) is meant for specific visitors or activities:
+- **Port 22 (SSH):** The **front door key** used by administrators to enter securely.
+- **Port 80 (HTTP):** The **main gate** for public visitors (web traffic).
+- **Port 443 (HTTPS):** The **VIP gate** for encrypted, secure communication.
+
+Just like you don’t want every door in your house to be open for everyone, in EC2, you open specific ports based on the type of traffic you expect.
+
+---
+
+### **3. Inbound Rules**
+Inbound rules decide **who can come into your house** and through which door:
+- **Example:** If you want your friend to come to your house through the main gate (Port 80), you give them permission by adding their **name** (or in EC2, their IP address) to the guest list.
+
+In EC2 terms:
+- Allow **HTTP traffic (Port 80)** from **anyone** (0.0.0.0/0).
+- Allow **SSH traffic (Port 22)** only from your **office network's IP address**.
+
+**Real-world analogy:** A restaurant allowing customers through the front door but keeping the kitchen door locked, only accessible to staff.
+
+---
+
+### **4. Outbound Rules**
+Outbound rules decide **who or what can leave your house**:
+- **Example:** If you're ordering food online, you let your delivery request go out, but you don’t allow random spam emails from your computer.
+
+In EC2 terms:
+- By default, all outbound traffic is allowed, meaning your EC2 instance can communicate freely unless restricted.
+
+**Real-world analogy:** A guest leaving your house after the party. You may allow them to leave through specific exits (e.g., the back gate).
+
+---
+
+### **5. Real-Life Scenarios**
+Here are a few scenarios to simplify understanding:
+- **Scenario 1: Hosting a Website**
+  - You open **Port 80 (HTTP)** or **Port 443 (HTTPS)** to allow public users to access your website.
+  - You may also open **Port 22 (SSH)** but restrict it to your own IP for maintenance.
+
+- **Scenario 2: Secure Communication**
+  - If you're running a private application, you allow **Port 3306** (MySQL) but restrict access to only the application server’s IP.
+
+- **Scenario 3: Blocking Unwanted Visitors**
+  - If you notice unusual traffic (like hackers), you update the rules to block their IP addresses, much like telling your security guard not to let specific people in.
+
+---
+
+### **What is Amazon CloudWatch?**
+Amazon CloudWatch is a powerful monitoring and observability service in AWS. It provides actionable insights by collecting metrics, logs, and events for your AWS resources and applications.
+
+- **Features**:
+  - Monitors various AWS resources such as **EC2, S3, RDS, DynamoDB, Lambda**, and more.
+  - Tracks metrics like **CPU usage, Disk I/O, and Network traffic** for EC2 instances.
+  - Supports custom metrics for monitoring application-specific performance.
+  - Enables **log analysis** using CloudWatch Logs.
+
+- **Memory Monitoring**:
+  - By default, CloudWatch does not monitor **Memory/RAM and OS level Disk Utilization**.
+  - **Solution**: Install and configure the **CloudWatch Agent** on the EC2 instance to collect memory usage and other custom metrics. (Note: This incurs additional costs.)
+
+---
+
+### **Types of Monitoring in CloudWatch**
+1. **Basic Monitoring**:
+   - **Default**: Enabled automatically for supported resources.
+   - **Interval**: Metrics are collected at **5-minute intervals**.
+   - **Cost**: Free.
+
+2. **Detailed Monitoring**:
+   - **Optional**: Must be explicitly enabled.
+   - **Interval**: Metrics are collected at **1-minute intervals**.
+   - **Cost**: Additional charges apply.
+   - **Use Case**: Required for time-sensitive or high-resolution metric monitoring.
+
+---
+
+### **What is a CloudWatch Alarm?**
+A CloudWatch Alarm monitors specific metrics and triggers actions based on predefined thresholds. It integrates with other AWS services to notify you or take automated actions when an issue occurs.
+
+- **How It Works**:
+  1. Define a **metric** to monitor (e.g., CPU Utilization).
+  2. Set a **threshold** (e.g., CPU exceeds 80%).
+  3. Specify an **action** (e.g., send an email or auto-scale instances).
+
+---
+
+### **Common Use Cases for CloudWatch Alarms**
+1. **Resource Monitoring**:
+   - Notify when EC2 **CPU utilization** exceeds 80%.
+   - Alert when **Memory usage** is high (requires CloudWatch Agent).
+   - Trigger actions if an EBS volume is running out of space.
+
+2. **Auto-Scaling**:
+   - Automatically scale EC2 instances up or down based on traffic or workload.
+
+3. **Application Performance**:
+   - Trigger alarms if RDS database connections exceed a safe limit.
+   - Monitor Lambda function invocations and error rates.
+
+4. **Health Monitoring**:
+   - Get alerts for unhealthy targets in an Application Load Balancer (ALB).
+   - Monitor and respond to high error rates in APIs or application logs.
+
+---
+
+### **AWS EFS (Elastic File System) Overview**  
+EFS is a **fully managed, scalable, and elastic file storage system** designed to provide shared access across multiple EC2 instances.
+
+---
+
+### **Key Features:**  
+- **Protocol:**  
+  - Works with **NFS v4.1/v4.0**, using port **2049** for communication.  
+  - Supports **Linux-based operating systems only.**  
+  - For Windows, AWS FSx (using SMB protocol) is recommended.  
+
+- **Scalability:**  
+  - No pre-provisioning required; storage grows and shrinks automatically.  
+  - Can handle petabytes of data seamlessly.  
+
+- **Performance Modes:**  
+  1. **General Purpose (default)** – Suitable for most workloads.  
+  2. **Max I/O** – Designed for high throughput and parallel operations.  
+
+- **Throughput Modes:**  
+  1. **Bursting (default):** Performance scales with the size of the file system.  
+  2. **Provisioned:** Fixed throughput, useful for high-performance needs.  
+
+---
+
+### **Mounting EFS on EC2 Instances**  
+
+#### **Step 1: Create a mount directory**  
+```bash
+mkdir /server1
+```
+
+#### **Step 2: Mount the EFS file system**  
+```bash
+sudo mount -t nfs4 -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport fs-0b7b1937bf7ebbeb6.efs.ap-south-1.amazonaws.com:/ /server1
+```
+
+**Explanation of mount options:**  
+- `-t nfs4` → Specifies the NFS version.  
+- `nfsvers=4.1` → Specifies NFS version 4.1.  
+- `rsize/wsize=1048576` → Read/write buffer size in bytes.  
+- `hard` → Ensures operations retry indefinitely in case of failures.  
+- `timeo=600` → Timeout in deciseconds before retrying an operation.  
+- `retrans=2` → Number of retries before giving up.  
+- `noresvport` → Uses a new dynamic source port for each connection.  
+
+---
+
+### **Persistent Mount Using `/etc/fstab`**  
+To ensure the EFS mount persists after reboot, add the following entry in the `/etc/fstab` file:
+
+```bash
+fs-0b7b1937bf7ebbeb6.efs.ap-south-1.amazonaws.com:/ /server1 nfs4 nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport 0 0
+```
+
+You can verify active mounts using:
+
+```bash
+cat /etc/mtab
+```
+
+---
+
+### **Security Group Configuration for EFS**  
+To allow EC2 instances to connect to EFS, create a security group with inbound rules allowing **NFS (port 2049)**. Options include:
+
+1. **Open to the entire VPC CIDR block:**  
+   - Allows any instance within the VPC to connect.  
+   - Example: `10.0.0.0/16` (depends on your VPC CIDR).  
+
+2. **Allow specific EC2 private IP addresses:**  
+   - Use instance-specific private IPs in the rule to restrict access.  
+
+3. **Reference EC2 security groups (recommended):**  
+   - The most secure approach:  
+   - Allow inbound traffic from EC2's security group instead of IP-based rules.  
+
+---
+
+### **Use Cases for AWS EFS**  
+- Centralized storage for multiple EC2 instances (e.g., web servers).  
+- Application data sharing across different environments.  
+- Backup and archival purposes.  
+- Scalable storage solution for containerized applications (ECS/EKS).  
+
+---
+### **AWS Placement Groups Overview**  
+AWS **Placement Groups** are logical groupings of EC2 instances that influence how instances are placed on underlying hardware. They help optimize performance, reduce latency, or improve fault tolerance, depending on the workload requirements.
+
+---
+
+### **Types of Placement Groups:**  
+
+#### **1. Cluster Placement Group**  
+A **Cluster Placement Group (CPG)** places instances close together within a **single Availability Zone** to achieve **low-latency and high-throughput performance.**  
+
+**Best suited for:**  
+- Applications requiring **high network throughput** and **low latency.**  
+- Big data applications (e.g., Hadoop clusters).  
+- High-performance computing (HPC).  
+- Distributed databases.
+
+---
+
+#### **2. Partition Placement Group**  
+A **Partition Placement Group (PPG)** divides instances into **multiple isolated partitions** across multiple racks within an Availability Zone. Each partition is isolated from failures in other partitions.  
+
+**Best suited for:**  
+- Distributed and fault-tolerant applications (e.g., Hadoop, Kafka, Cassandra).  
+- Large-scale distributed applications that need redundancy.  
+- Workloads where failures should be isolated to specific partitions.
+
+
+---
+
+#### **3. Spread Placement Group**  
+A **Spread Placement Group (SPG)** places instances across **distinct hardware racks**, ensuring that each instance is on a separate rack with its own power and network.  
+
+**Best suited for:**  
+- Applications requiring **high availability** and **minimal risk of simultaneous failure.**  
+- Critical workloads such as financial applications, monitoring systems, or microservices.  
+- Small deployments requiring fault tolerance (up to 7 instances per AZ).  
+
+---
+
+### **Choosing the Right Placement Group**  
+1. **Choose Cluster Placement Group if:**  
+   - You need low-latency, high-speed network connectivity.  
+   - Your workload is tightly coupled and requires high throughput.  
+
+2. **Choose Partition Placement Group if:**  
+   - You need fault isolation within distributed applications.  
+   - You are running big data clusters with failure resilience.  
+
+3. **Choose Spread Placement Group if:**  
+   - You need to minimize risk by placing instances on separate hardware.  
+   - You have a smaller number of critical instances requiring isolation.  
+
+---
+
+### Standard Naming Formats we use in Organisation:
+
+`[Environment]-[Platform]-[ServiceType]-[ClientID]`  
+
+---
+
+### **Refined Component Breakdown:**  
+
+#### **1. Platform (Unchanged)**  
+- **WIN** → Windows  
+- **LIN** → Linux  
+
+#### **2. Environment (Unchanged)**  
+- **P** → Production  
+- **U** → UAT  
+- **Q** → QA  
+- **D** → Development  
+- **T** → Training  
+
+#### **3. Service Type (Broad functional category)**  
+- **APP** → Application Server  
+- **DBS** → Database Server  
+- **WEB** → Web Server  
+- **HDP** → Hadoop Platform  
+- **DIR** → Directory Services (Active Directory, LDAP, etc.)  
+- **FSR** → File Storage  
+
+---
+
+### **Example Naming Conventions:**  
+
+**Production Windows Web Frontend Server for Client 1:**  
+`P-WIN-WEB-C1`  
+
+**Development Linux Application Backend Server for Client 2:**  
+`D-LIN-APP-C2`  
+
+**UAT Windows Database Server for Client 3:**  
+`U-WIN-DBS-C3`  
+
+**Training Linux Hadoop Processing Server:**  
+`T-LIN-HDP-PROC`
+
+---
