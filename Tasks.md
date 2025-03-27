@@ -29,6 +29,7 @@
   }
 }
 ```
+
 - Configure the rule to send a notification using Amazon SNS.
 - **Note:** This configuration has not been tested. Please verify and update the status after testing.
 
@@ -50,7 +51,6 @@
 ```
 - Configure the rule to send a notification via Amazon SNS.
 - **Note:** This configuration has not been tested. Please verify and update the status after testing.
-```
 
 ---
 
