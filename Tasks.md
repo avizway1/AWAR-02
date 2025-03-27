@@ -1,3 +1,59 @@
+# AWS EventBridge Configuration Tasks
+
+## Task-1: Configure EventBridge to Stop an EC2 Instance at a Specific Time (9:15 AM)
+- Create an EventBridge rule to trigger an AWS Lambda function or Systems Manager Automation document to stop the EC2 instance.
+- Set the schedule expression to `cron(15 9 * * ? *)` to run at 9:15 AM daily.
+
+---
+
+## Task-2: Configure to Stop an EC2 Instance After 5 Minutes and Trigger a Custom Email Notification
+- Create an EventBridge rule with a delay of 5 minutes after the event is triggered.
+- Use an **Input Transformer** to modify the event data before passing it to the target (SNS for email notification).
+- Ensure the SNS topic is configured to send email notifications to the required recipients.
+
+---
+
+## Task-3: Send an SNS Notification When an IAM Policy is Modified
+- Create an EventBridge rule to capture IAM policy modification events using the following **Event Pattern**:
+```json
+{
+  "source": ["aws.iam"],
+  "detail-type": ["AWS API Call via CloudTrail"],
+  "detail": {
+    "eventSource": ["iam.amazonaws.com"],
+    "eventName": [
+      "CreatePolicy",
+      "DeletePolicy",
+      "UpdatePolicy"
+    ]
+  }
+}
+```
+- Configure the rule to send a notification using Amazon SNS.
+- **Note:** This configuration has not been tested. Please verify and update the status after testing.
+
+---
+
+## Task-4: Get a Notification When Anyone Logs in to the AWS Account
+- Create an EventBridge rule to capture AWS account login events using the following **Event Pattern**:
+```json
+{
+  "source": ["aws.signin"],
+  "detail-type": ["AWS Console Sign In via CloudTrail"],
+  "detail": {
+    "eventName": ["ConsoleLogin"],
+    "additionalEventData": {
+      "MFAUsed": ["Yes", "No"]
+    }
+  }
+}
+```
+- Configure the rule to send a notification via Amazon SNS.
+- **Note:** This configuration has not been tested. Please verify and update the status after testing.
+```
+
+---
+
 #### **Task 1**: **Add load on ec2 instance and test the alarm
 1. **Launch a Linux EC2 Instance**:  
    - Select the appropriate AMI and instance type.
