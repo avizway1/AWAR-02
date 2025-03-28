@@ -1,4 +1,4 @@
-## AWS CLI Task Guide
+## AWS CLI Tasks
 ### Task 1: Launch an EC2 Instance Using AWS CLI  
 **Objective:**  
 Launch an EC2 instance with the following parameters using the AWS CLI:  
