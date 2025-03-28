@@ -1,3 +1,155 @@
+---
+
+## AWS CLI Task Guide
+
+### Task 1: Launch an EC2 Instance Using AWS CLI  
+**Objective:**  
+Launch an EC2 instance with the following parameters using the AWS CLI:  
+- AMI ID: Specify the desired AMI.  
+- Instance Type: Choose an appropriate instance type (e.g., t2.micro).  
+- Subnet ID: Define the target subnet.  
+- Security Group ID: Provide the security group(s).  
+- Key Pair: Specify the key pair for SSH access.  
+- Number of Instances: Define the required number of instances.  
+
+Verify the instance launch by describing the instance status:  
+
+```
+aws ec2 describe-instances --instance-ids <instance-id>
+```
+
+---
+
+### Task 2: Automate Web Server Setup Using User Data and S3  
+**Objective:**  
+Set up an EC2 instance as a web server, download web content (index.html and status.html) from S3, and serve it using Apache.
+
+**Instructions:**  
+
+1. **Create the S3 Bucket:**  
+- Upload `index.html` and `status.html` to the bucket.  
+
+2. **Launch EC2 Instance with User Data:**  
+- Use the following User Data script while launching the instance:  
+
+```
+#!/bin/bash
+yum install httpd -y
+service httpd start
+chkconfig httpd on
+aws s3 cp s3://<bucket-name>/index.html /var/www/html/index.html
+aws s3 cp s3://<bucket-name>/status.html /var/www/html/status.html
+```
+
+3. **Verify the Setup:**  
+- Access the public IP or domain of the instance to check if the web server is running and serving the files.  
+
+---
+
+### Task 3: Create IAM Users and Test AWS CLI Profiles  
+**Objective:**  
+Create two IAM users with specific permissions and test their access using the AWS CLI.  
+
+**Instructions:**  
+
+1. **Create IAM Users:**  
+- User1: Grant AmazonS3FullAccess policy.  
+- User2: Grant IAMFullAccess policy.  
+
+2. **Generate Access Keys:**  
+- Generate the Access Key and Secret Key for both users.  
+
+3. **Configure CLI Profiles:**  
+- Set up CLI profiles on your local machine:
+  
+```
+aws configure --profile user1-profile
+aws configure --profile user2-profile
+```
+
+4. **Test User Permissions:**  
+- User1: Attempt to create an S3 bucket.  
+```
+aws s3 mb s3://<bucket-name> --profile user1-profile
+```
+- User2: Attempt to create an IAM user.  
+```
+aws iam create-user --user-name test-user --profile user2-profile
+```
+- Verify that each user has the expected permissions and no access beyond what is granted.  
+
+---
+
+### Task 4: Use the aws s3 sync Command for Incremental Updates from S3 to EC2  
+**Objective:**  
+Test incremental synchronization of web content between an S3 bucket and an EC2 instance using the aws s3 sync command.  
+
+**Instructions:**  
+
+1. **Prepare the S3 Bucket:**  
+- Add the initial set of files (e.g., index.html and status.html) to your S3 bucket.  
+
+2. **Launch EC2 and Configure Web Server:**  
+- Set up the web server and sync data from the S3 bucket:  
+```
+aws s3 sync s3://<bucket-name>/ /var/www/html/
+```
+
+3. **Test Incremental Updates:**  
+- Add a new file (e.g., about.html) or modify an existing file (e.g., index.html) in the S3 bucket.  
+- Run the sync command again to pull only updated or new files:  
+```
+aws s3 sync s3://<bucket-name>/ /var/www/html/
+```
+
+4. **Verify Updates:**  
+- Access the public IP or domain of the EC2 instance to confirm that the changes are reflected.  
+
+---
+
+### Task 5: Automate S3 to EC2 Synchronization Using a Cron Job  
+**Objective:**  
+Set up a cron job on an EC2 instance to automate regular synchronization of web content from an S3 bucket to the web server directory.  
+
+**Instructions:**  
+
+1. **Launch and Configure EC2 Instance:**  
+- Launch an EC2 instance and install Apache.  
+- Verify that the web server is running.  
+
+2. **Perform Initial Synchronization:**  
+- Manually run the aws s3 sync command to pull initial content:  
+```
+aws s3 sync s3://<bucket-name>/ /var/www/html/
+```
+
+3. **Install and Enable Cron:**  
+- Ensure the cronie package is installed and the service is enabled:  
+
+```
+yum install cronie -y
+service crond start
+chkconfig crond on
+```
+
+4. **Create a Cron Job for Regular Synchronization:**  
+
+- Open the crontab editor:  
+```
+crontab -e
+```
+- Add the following entry to synchronize every 2 minutes:  
+```
+*/2 * * * * aws s3 sync s3://<bucket-name>/ /var/www/html/
+```
+
+5. **Test the Automation:**  
+- Add or update files in the S3 bucket.  
+- Wait for the cron job to trigger and verify the changes by accessing the instance’s public IP or domain.  
+
+---
+
+---
 # AWS EventBridge Configuration Tasks
 
 ## Task-1: Configure EventBridge to Stop an EC2 Instance at a Specific Time (9:15 AM)
