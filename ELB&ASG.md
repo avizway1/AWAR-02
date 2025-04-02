@@ -198,6 +198,15 @@ AWS Elastic Load Balancers (ELB) support stickiness for **Application Load Balan
 
 ---
 
+![ALB](https://github.com/user-attachments/assets/b6a40bb1-07f8-41c5-a47d-a58492e63965)
+
+---
+
+![elb](https://github.com/user-attachments/assets/6c2d93da-26a8-4c59-8df3-bfa17bc3c273)
+
+
+---
+
 ### **Auto Scaling Group (ASG) Overview**
 ASG helps automatically adjust the number of EC2 instances to maintain application availability and optimize costs. It works with different scaling policies to handle workload variations.
 
