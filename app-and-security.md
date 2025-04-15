@@ -411,59 +411,6 @@ Amazon SQS is a fully managed message queuing service used to decouple and scale
 
 ---
 
-## Amazon SWF (Simple Workflow Service)
-
-**What is SWF?**  
-Amazon SWF helps build, run, and monitor background jobs and complex workflows in distributed systems.
-
-**Key Features:**  
-- Task-based architecture (deciders and workers).
-- Supports human and automated tasks.
-- Guarantees task execution order.
-- Tracks the state of each workflow.
-
-**Use Cases:**  
-- Long-running, stateful workflows.
-- Video encoding pipelines.
-- Multi-step human and machine tasks.
-
-**Example:**  
-- An e-commerce order processing workflow: order validation, payment processing, and shipping coordination.
-
----
-
-## AWS Step Functions
-
-**What are Step Functions?**  
-AWS Step Functions coordinate distributed applications and microservices using visual workflows. It helps manage the execution of AWS Lambda functions and integrates with other AWS services.
-
-**Key Features:**  
-- State machine model.
-- Supports parallel processing, retries, and error handling.
-- Integrates with Lambda, ECS, SQS, DynamoDB, and more.
-- Visual workflow designer for easier monitoring.
-
-**Use Cases:**  
-- Orchestrating microservices.
-- Automating ETL pipelines.
-- Building serverless workflows.
-
-**Example:**  
-- A data processing pipeline that extracts data from S3, transforms it using Lambda, and loads it into a database.
-
----
-
-**Quick Comparison:**
-
-| Service | Communication Model | Use Case |
-|---------|---------------------|---------|
-| SNS | Pub/Sub | Notify multiple endpoints or fan-out messages |
-| SQS | Queue-based | Decouple components, async message processing |
-| SWF | Task-based | Long-running workflows, stateful processes |
-| Step Functions | State Machine | Orchestrate AWS services and Lambda functions |
-
----
-
 ## **AWS Lambda: Serverless Computing Service**
 
 **Overview:**
@@ -531,3 +478,35 @@ AWS Lambda is a serverless compute service that runs code without provisioning o
 - **Security:** Minimize IAM permissions to follow the principle of least privilege.
 
 ---
+---
+
+## AWS Step Functions
+
+**What are Step Functions?**  
+AWS Step Functions coordinate distributed applications and microservices using visual workflows. It helps manage the execution of AWS Lambda functions and integrates with other AWS services.
+
+**Key Features:**  
+- State machine model.
+- Supports parallel processing, retries, and error handling.
+- Integrates with Lambda, ECS, SQS, DynamoDB, and more.
+- Visual workflow designer for easier monitoring.
+
+**Use Cases:**  
+- Orchestrating microservices.
+- Automating ETL pipelines.
+- Building serverless workflows.
+
+**Example:**  
+- A data processing pipeline that extracts data from S3, transforms it using Lambda, and loads it into a database.
+
+---
+
+**Quick Comparison:**
+
+| Service | Communication Model | Use Case |
+|---------|---------------------|---------|
+| SNS | Pub/Sub | Notify multiple endpoints or fan-out messages |
+| SQS | Queue-based | Decouple components, async message processing |
+| SWF | Task-based | Long-running workflows, stateful processes |
+| Step Functions | State Machine | Orchestrate AWS services and Lambda functions |
+
