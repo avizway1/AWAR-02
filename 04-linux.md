@@ -762,46 +762,261 @@ Vim (short for **Vi IMproved**) is a powerful, feature-rich text editor designed
 
 #### **Commands to Identify PIDs and Manage Processes**
 
-1. **View Background and Suspended Jobs:**
-   - `jobs`: Displays all background and suspended processes in the current shell.
+---
 
-2. **View the Process Tree:**
+### 1. **`top`**
+
+* **Description**: Shows a real-time view of running processes, system load, CPU, and memory usage.
+* **Usage**:
+
+  ```bash
+  top
+  ```
+* **Example**:
+  Start a test process:
+
+  ```bash
+  sleep 300 &
+  ```
+
+  Then run:
+
+  ```bash
+  top
+  ```
+
+  You’ll see the `sleep` process listed with its PID (Process ID), CPU, and memory usage.
+
+---
+
+### 2. **`ps`**
+
+* **Description**: Shows the snapshot of current processes.
+* **Usage**:
+
+  ```bash
+  ps
+  ```
+* **Example**:
+
+  ```bash
+  sleep 300 &
+  ps
+  ```
+
+  You'll see the `sleep` command running with its PID, TTY, time, and command name.
+
+---
+
+### 3. **`ps aux`**
+
+* **Description**: Shows a detailed list of all processes for all users.
+
+  * `a` – shows processes for all users
+  * `u` – shows user/owner of the process
+  * `x` – shows processes not attached to a terminal
+* **Usage**:
+
+  ```bash
+  ps aux
+  ```
+* **Example**:
+
+  ```bash
+  sleep 300 &
+  ps aux | grep sleep
+  ```
+
+  Output includes:
+
+  ```
+  user     12345  0.0  0.0   1234   456 ?        S    21:00   0:00 sleep 300
+  ```
+
+---
+
+### 4. **`htop`**
+
+* **Description**: An interactive version of `top` with color and better UI. Use arrow keys to navigate and kill processes directly.
+
+* **Usage**:
+
+  ```bash
+  htop
+  ```
+
+  *(If not installed, install it with `sudo apt install htop` or `sudo yum install htop`)*
+
+* **Example**:
+
+  ```bash
+  sleep 300 &
+  htop
+  ```
+
+  Use arrow keys to select the process and press `F9` to kill, `F10` to quit.
+
+---
+
+### 5. **`kill <PID>`**
+
+* **Description**: Sends a signal to terminate a process by its PID. By default, it sends `SIGTERM` (signal 15) – a gentle request to stop.
+
+* **Usage**:
+
+  ```bash
+  kill <PID>
+  ```
+
+* **Example**:
+
+  ```bash
+  sleep 300 &
+  ps aux | grep sleep
+  kill 12345   # Replace 12345 with actual PID
+  ```
+
+---
+
+### 6. **`kill -9 <PID>`**
+
+* **Description**: Sends `SIGKILL` (signal 9), which forcefully stops a process. Use only when normal `kill` doesn’t work.
+
+* **Usage**:
+
+  ```bash
+  kill -9 <PID>
+  ```
+
+* **Example**:
+
+  ```bash
+  sleep 300 &
+  ps aux | grep sleep
+  kill -9 12345
+  ```
+
+---
+
+### Summary Table:
+
+| Command         | Description                             | Example         |              |
+| --------------- | --------------------------------------- | --------------- | ------------ |
+| `top`           | Real-time process and system monitor    | `top`           |              |
+| `ps`            | Shows your running processes            | `ps`            |              |
+| `ps aux`        | Lists all processes in detail           | \`ps aux        | grep sleep\` |
+| `htop`          | Interactive process viewer (like `top`) | `htop`          |              |
+| `kill <PID>`    | Gracefully terminate process            | `kill 12345`    |              |
+| `kill -9 <PID>` | Forcefully terminate (kill) a process   | `kill -9 12345` |              |
+
+---
+
+**View the Process Tree:**
    - `pstree`: Shows the process tree in a hierarchical structure.
    - `pstree | less`: Use with `less` to view the process tree page by page.
-
-3. **List Running Processes:**
-   - `ps`: Displays processes running in the current terminal.
-   - `ps aux`: Lists all running processes across the system in a detailed format.
-   - `ps faux`: Displays the process tree along with detailed process information.
-
-4. **Real-Time Process Monitoring:**
-   - `top`: Displays a continuously updating list of running processes, their CPU, memory usage, etc. Press `z` for a colorized view.
-
-5. **Quit from any Continuous Process View:**
-   - Press `q` to exit from commands like `top`.
-
-#### **Killing a Process**
-1. **Terminate a Process by PID:**
-   - `kill PID`: Terminates the process with the specified PID.
-
-For example:
-   ```
-   ps aux | grep some-process
-   kill 1234  # Replace 1234 with the actual PID of the process.
-   ```
 
 ---
 
 #### **System and Memory Information**
 
-1. **Check System Uptime:**
-   - `uptime`: Provides the time since the system was last booted, along with load averages.
+### **Check System Uptime**
 
-2. **Check Free Memory:**
-   - `free`: Displays memory usage statistics.
-   - `free -h`: Displays memory usage in a human-readable format.
+* **Command**:
+
+  ```bash
+  uptime
+  ```
+* **Description**: Shows how long the system has been running, number of users, and load average.
+* **Example**:
+
+  ```
+  21:10:38 up 5 days,  2:12,  2 users,  load average: 0.00, 0.01, 0.05
+  ```
 
 ---
+
+### **Check Free Memory**
+
+* **Command**:
+
+  ```bash
+  free
+  ```
+
+* **Useful Options**:
+
+  * `free -h`: Human-readable (MB/GB)
+  * `free -m`: Show memory in MB
+  * `free -g`: Show memory in GB
+  * `free -t`: Add a total row at the bottom
+  * `free -s 2`: Refresh every 2 seconds (live monitoring)
+
+* **Example**:
+
+  ```bash
+  free -h
+  ```
+
+---
+
+### **`top` vs `htop` Recap**
+
+* `top`: Built-in CLI for live processes.
+* `htop`: Interactive UI with color, better navigation.
+
+
+---
+
+### **`watch` – Repeated Execution**
+
+* **Command**:
+
+  ```bash
+  watch -n 2 free -h
+  ```
+* **Description**: Runs a command repeatedly every 2 seconds.
+
+---
+
+### **`pidof` – Get PID of a process by name**
+
+* **Command**:
+
+  ```bash
+  pidof nginx
+  ```
+* **Output**: Returns PID(s) of `nginx` if running.
+
+---
+
+### **`pgrep` and `pkill` – Process search/kill by name**
+
+* **pgrep**:
+
+  ```bash
+  pgrep sleep
+  ```
+* **pkill**:
+
+  ```bash
+  pkill sleep
+  ```
+
+---
+
+### **`df` – Disk Usage**
+
+* **Command**:
+
+  ```bash
+  df -h
+  ```
+* **Description**: Shows disk space in human-readable form.
+
+
+
+---
+
 # User Management in linux
 
 ---
