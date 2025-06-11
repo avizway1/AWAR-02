@@ -194,10 +194,27 @@ The Linux file system is organized hierarchically, with `/` as the root. Each di
 ---
 
 #### **System and Information Commands:**
-4. **`uname`**: Prints system information.  
-   - **`uname -a`**: Prints all available system information.  
-5. **`man <command>`**: Opens the manual for the specified command (e.g., `man uname`).  
-6. **`history`**: Displays a list of recently executed commands.
+
+**`hostname`**: Displays the current system's hostname — the name assigned to the machine.
+Example: `hostname` → might return `ip-172-31-0-23`
+
+**`cat /etc/os-release`**: Shows detailed operating system info such as name, version, and ID.
+Useful for confirming if you're running Amazon Linux 2023 or another distro.
+
+**`hostnamectl`**: Provides complete hostname details and system metadata like OS, kernel, and architecture.
+Also used to change the hostname with `sudo hostnamectl set-hostname newname`.
+
+**`uptime`**: Shows how long the system has been running, number of users, and load averages.
+Example: `uptime` → `10:45:01 up 2 days, 3:21,  1 user,  load average: 0.15, 0.20, 0.22`
+
+**`uptime -p`**: Prints system uptime in a human-friendly format.
+Example: `uptime -p` → `up 2 days, 3 hours, 21 minutes`
+
+**`who`**: Displays which users are currently logged in and their login times.
+Useful for checking active sessions on multi-user systems.
+
+**`man <command>`**: Opens the manual for the specified command (e.g., `man uname`).  
+**`history`**: Displays a list of recently executed commands.
 
 ---
 
@@ -218,7 +235,7 @@ The Linux file system is organized hierarchically, with `/` as the root. Each di
 ---
 
 #### **Privilege Escalation:**
-13. **`sudo su`**: Switches to the root user (requires the user's password for sudo access).
+**`sudo su`**: Switches to the root user (requires the user's password for sudo access).
 
 ---
 
@@ -235,6 +252,8 @@ The Linux file system is organized hierarchically, with `/` as the root. Each di
   ```bash
   touch myfile.txt
   ```
+to create multiple file you can use i.e; touch test{1..10}.txt 
+  
 - **`mkdir <NAME>`**: Creates a new directory with the specified name.  
   Example:  
   ```bash
@@ -424,92 +443,6 @@ The Linux file system is organized hierarchically, with `/` as the root. Each di
        sort -r example.txt
        ```
 ---
-
-### Using ZIP Format in Linux
-
-#### Install ZIP and UNZIP tools:
-1. **Install `zip`:**  
-   ```
-   sudo yum install zip -y
-   ```
-2. **Install `unzip`:**  
-   ```
-   sudo yum install unzip -y
-   ```
-
-#### Zip Commands:
-
-1. **Zip multiple files into an archive:**  
-   ```
-   zip archive.zip file1.txt file2.txt file3.txt
-   ```
-   - Creates a `archive.zip` containing `file1.txt`, `file2.txt`, and `file3.txt`.
-
-2. **Zip all files in the current directory:**  
-   ```
-   zip archive.zip *
-   ```
-   - Adds all files in the current directory to `archive.zip`.
-
-3. **Zip an entire folder (including its subdirectories):**  
-   ```
-   zip -r archive.zip mydirectory
-   ```
-   - Creates a zip file named `archive.zip` containing the folder `mydirectory` and all its contents recursively.
-
-#### Unzip Commands:
-1. **Unzip an archive:**  
-   ```
-   unzip archive.zip
-   ```
-   - Extracts the contents of `archive.zip` into the current directory.
-#### tar.gz Zip Commands:
-1. **Create a .tar.gz archive:**  
-   ```
-   tar -czvf myfile.tar.gz file1 file2 folder1
-   ```
-  
-2. **Unzip a .tzr.gz archive:**  
-   ```
-   tar -xzvf myfile.tar.gz
-   ```
-   - Extracts the contents of `myfile.tar.gz` into the current directory.
----
-
-### Understanding `ECHO` command.
-
-1. **Print text to the terminal:**
-   ```bash
-   echo "Hello, World!"
-   ```
-   Output:
-   ```
-   Hello, World!
-   ```
-
-2. **Redirect output to a file:**
-   ```bash
-   echo "This is a test" > file.txt
-   ```
-   - Writes "This is a test" into `file.txt`.
-
-3. **Append text to a file:**
-   ```bash
-   echo "Adding another line" >> file.txt
-   ```
-   - Adds "Adding another line" to `file.txt`.
-   
-4. **Print a variable value:**
-   ```bash
-   name="Avinash"
-   echo "Hello, $name!"
-   ```
-   Output:
-   ```
-   Hello, Avinash!
-   ```
----
-
 ### **What is `grep` in Linux?**
 - `grep` (Global Regular Expression Print) is a powerful command-line tool used for searching text within files.
 - It searches files for lines that match a specified pattern and prints them.
@@ -608,10 +541,95 @@ Vim (short for **Vi IMproved**) is a powerful, feature-rich text editor designed
 - **`:set nonumber`**: Remove line numbers.  
 
 ---
+
+### Using ZIP Format in Linux
+
+#### Install ZIP and UNZIP tools:
+1. **Install `zip`:**  
+   ```
+   sudo yum install zip -y
+   ```
+2. **Install `unzip`:**  
+   ```
+   sudo yum install unzip -y
+   ```
+
+#### Zip Commands:
+
+1. **Zip multiple files into an archive:**  
+   ```
+   zip archive.zip file1.txt file2.txt file3.txt
+   ```
+   - Creates a `archive.zip` containing `file1.txt`, `file2.txt`, and `file3.txt`.
+
+2. **Zip all files in the current directory:**  
+   ```
+   zip archive.zip *
+   ```
+   - Adds all files in the current directory to `archive.zip`.
+
+3. **Zip an entire folder (including its subdirectories):**  
+   ```
+   zip -r archive.zip mydirectory
+   ```
+   - Creates a zip file named `archive.zip` containing the folder `mydirectory` and all its contents recursively.
+
+#### Unzip Commands:
+1. **Unzip an archive:**  
+   ```
+   unzip archive.zip
+   ```
+   - Extracts the contents of `archive.zip` into the current directory.
+#### tar.gz Zip Commands:
+1. **Create a .tar.gz archive:**  
+   ```
+   tar -czvf myfile.tar.gz file1 file2 folder1
+   ```
+  
+2. **Unzip a .tzr.gz archive:**  
+   ```
+   tar -xzvf myfile.tar.gz
+   ```
+   - Extracts the contents of `myfile.tar.gz` into the current directory.
+---
+
+### Understanding `ECHO` command.
+
+1. **Print text to the terminal:**
+   ```bash
+   echo "Hello, World!"
+   ```
+   Output:
+   ```
+   Hello, World!
+   ```
+
+2. **Redirect output to a file:**
+   ```bash
+   echo "This is a test" > file.txt
+   ```
+   - Writes "This is a test" into `file.txt`.
+
+3. **Append text to a file:**
+   ```bash
+   echo "Adding another line" >> file.txt
+   ```
+   - Adds "Adding another line" to `file.txt`.
+   
+4. **Print a variable value:**
+   ```bash
+   name="Avinash"
+   echo "Hello, $name!"
+   ```
+   Output:
+   ```
+   Hello, Avinash!
+   ```
+
+---
 # ***Package and Process Management**
 ---
 #### **Package Management**
-
 ---
 
 ### **1. RPM (RedHat Package Manager):**
@@ -1024,6 +1042,73 @@ chmod -R 755 /scripts
 | `644`     | rw-r--r--            | Owner can read/write, others can read |
 | `755`     | rwxr-xr-x            | Owner has full, others can read/execute |
 | `777`     | rwxrwxrwx            | Full permissions for everyone       |
+
+
+---
+
+# SCP (Secure Copy) Command Guide
+
+The `scp` command is used to securely transfer files and directories between systems over SSH.
+
+---
+
+## Basic Syntax
+
+```bash
+scp [options] source destination
+```
+
+---
+
+## Transfer From Local to Remote
+
+```bash
+scp file.txt username@remote_ip:/path/to/destination/
+```
+
+- **file.txt** – Local file you want to copy
+- **username** – Username on the remote server
+- **remote_ip** – IP address or hostname of the remote machine
+- **/path/to/destination/** – Target directory on the remote machine
+
+**Example:**
+```bash
+scp myscript.sh ec2-user@192.168.1.10:/home/ec2-user/
+```
+
+---
+
+## Transfer From Remote to Local
+
+```bash
+scp username@remote_ip:/path/to/file.txt /local/path/
+```
+
+**Example:**
+```bash
+scp ec2-user@192.168.1.10:/var/log/messages /tmp/
+```
+
+---
+
+## Copy Directories Recursively
+
+```bash
+scp -r foldername username@remote_ip:/path/to/destination/
+```
+
+**Example:**
+```bash
+scp -r projects/ ec2-user@192.168.1.10:/home/ec2-user/
+```
+
+---
+
+## Using Identity File (e.g., AWS .pem Key)
+
+```bash
+scp -i mykey.pem file.txt ec2-user@ec2-3-91-145-111.compute-1.amazonaws.com:/home/ec2-user/
+```
 
 ---
 # **VOlume Management**
